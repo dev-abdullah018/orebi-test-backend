@@ -1,4 +1,4 @@
-function eamilValidation(email){
+function emailValidation(email){
     if(!email){
          return false
     }
@@ -13,4 +13,4 @@ function eamilValidation(email){
 
 }
 
-module.exports = eamilValidation;
+module.exports = emailValidation;

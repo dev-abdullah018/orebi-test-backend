@@ -8,7 +8,7 @@
 // module.exports = register
 
 //////////////////second class
-const eamilValidation = require("../helpers/emailValidation");
+const emailValidation = require("../helpers/emailValidation");
 const nameValidation = require("../helpers/nameValidation");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
@@ -18,7 +18,7 @@ async function register(req, res) {
     const {
       firstName,
       lastName,
-      eamil,
+      email,
       password,
       telephone,
       address,
@@ -40,13 +40,13 @@ async function register(req, res) {
       });
     }
 
-    if (!eamilValidation(eamil)) {
+    if (!emailValidation(email)) {
       return res.status(400).send({
         error: "Please inter a valid email",
       });
     }
 
-     let existingMail = await User.find({eamil})
+     let existingMail = await User.find({email})
 
      if(existingMail.length > 0){
       return res.status(400).send({
@@ -58,7 +58,7 @@ async function register(req, res) {
       let userData = new User({
         firstName,
         lastName,
-        eamil,
+        email,
         password: hash,
         telephone,
         address,
@@ -72,7 +72,7 @@ async function register(req, res) {
         success: "Registration Successful",
         firstName: userData.firstName,
         lastName: userData.lastName,
-        email: userData.eamil
+        email: userData.email
       })
     });
   } catch (error) {
