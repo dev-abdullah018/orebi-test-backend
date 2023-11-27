@@ -42,6 +42,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  randomOTP: {
+    type: String,
+    default: null,
+  }
 });
 
 module.exports = mongoose.model('User',userSchema);

@@ -12,6 +12,9 @@ const emailValidation = require("../helpers/emailValidation");
 const nameValidation = require("../helpers/nameValidation");
 const bcrypt = require("bcrypt");
 const User = require("../models/userModel");
+const sendEmail = require("../helpers/sendEmail");
+const otpTemplate = require("../helpers/otpTemplate");
+const aleaRNGFactory = require("number-generator/lib/aleaRNGFactory");
 
 async function register(req, res) {
   try {
@@ -54,7 +57,7 @@ async function register(req, res) {
       });
      }
 
-    bcrypt.hash(password, 10, function (err, hash) {
+    bcrypt.hash(password, 10, async function (err, hash) {
       let userData = new User({
         firstName,
         lastName,
@@ -67,16 +70,33 @@ async function register(req, res) {
         country,
         state,
       });
-      userData.save()
+    
+      userData.save();
+      
+      const generator2 = aleaRNGFactory(Date.now());
+       let randomOTP = generator2.uInt32().toString().substring(0,4)
+       let randomOTPStore = await User.findOneAndUpdate({email}, {$set: {randomOTP : randomOTP}}, {new: true})
+      sendEmail(email, randomOTPStore , otpTemplate)
+      
+      setTimeout(async () => {
+        // Update user record to remove OTP
+        await User.updateOne({ email }, { $unset: { randomOTP: "" } });
+        console.log("OTP removed for user:", email);
+      }, 5 * 60 * 1000);
+  
       res.json({
         success: "Registration Successful",
         firstName: userData.firstName,
         lastName: userData.lastName,
         email: userData.email
       })
-    });
+    })
+    
   } catch (error) {
     console.log(error.message);
+    res.status(500).json({
+      error: "Internal server error",
+    });
   }
 }
 module.exports = register;
