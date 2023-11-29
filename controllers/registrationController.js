@@ -1,13 +1,4 @@
-// async function register(req, res) {
-//     try {
-//         res.send("Register successful")
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
-// module.exports = register
 
-//////////////////second class
 const emailValidation = require("../helpers/emailValidation");
 const nameValidation = require("../helpers/nameValidation");
 const bcrypt = require("bcrypt");
@@ -15,8 +6,9 @@ const User = require("../models/userModel");
 const sendEmail = require("../helpers/sendEmail");
 const otpTemplate = require("../helpers/otpTemplate");
 const aleaRNGFactory = require("number-generator/lib/aleaRNGFactory");
+const { generateToken } = require("../helpers/token");
 
-async function register(req, res) {
+async function registrationController(req, res) {
   try {
     const {
       firstName,
@@ -29,6 +21,9 @@ async function register(req, res) {
       postCode,
       country,
       state,
+      birthYear,
+      birthMonth,
+      birthDate,
     } = req.body;
 
     if (!nameValidation(firstName)) {
@@ -49,13 +44,13 @@ async function register(req, res) {
       });
     }
 
-     let existingMail = await User.find({email})
+    let existingMail = await User.find({ email });
 
-     if(existingMail.length > 0){
+    if (existingMail.length > 0) {
       return res.status(400).send({
         error: "Email already Exists",
       });
-     }
+    }
 
     bcrypt.hash(password, 10, async function (err, hash) {
       let userData = new User({
@@ -69,34 +64,43 @@ async function register(req, res) {
         postCode,
         country,
         state,
+        birthYear,
+        birthMonth,
+        birthDate,
       });
-    
+
       userData.save();
-      
+
+      const token = generateToken(
+        {
+          id: userData._id.toString(),
+        },
+        "30m"
+      );
+
       const generator2 = aleaRNGFactory(Date.now());
-       let randomOTP = generator2.uInt32().toString().substring(0,4)
-       let randomOTPStore = await User.findOneAndUpdate({email}, {$set: {randomOTP : randomOTP}}, {new: true})
-      sendEmail(email, randomOTPStore , otpTemplate)
-      
-      setTimeout(async () => {
-        // Update user record to remove OTP
-        await User.updateOne({ email }, { $unset: { randomOTP: "" } });
-        console.log("OTP removed for user:", email);
-      }, 5 * 60 * 1000);
-  
+      let randomOTP = generator2.uInt32().toString().substring(0, 4);
+      let randomOTPStore = await User.findOneAndUpdate(
+        { email },
+        { $set: { randomOTP: randomOTP } },
+        { new: true }
+      );
+      sendEmail(email, randomOTPStore, otpTemplate);
+
       res.json({
-        success: "Registration Successful",
+        id: userData._id,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        email: userData.email
-      })
-    })
-    
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).json({
-      error: "Internal server error",
+        email: userData.email,
+        token: token,
+        birthYear: userData.birthYear,
+        birthMonth: userData.birthMonth,
+        birthDate: userData.birthDate,
+        success: "Registration Successful",
+      });
     });
+  } catch (error) {
+    res.send(error.message);
   }
 }
-module.exports = register;
+module.exports = registrationController;

@@ -12,7 +12,3 @@ router.use(api, (req, res) => {
 
 
 module.exports = router
-
-// _.get("/user", (req,res)=>{
-//   res.send("This is a user")
-// })

@@ -14,7 +14,7 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  password:{
+  password: {
     type: String,
     require: true,
   },
@@ -42,10 +42,22 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  birthYear: {
+    type: Number,
+    required: true,
+  },
+  birthMonth: {
+    type: Number,
+    required: true,
+  },
+  birthDate: {
+    type: Number,
+    required: true,
+  },
   randomOTP: {
     type: String,
     default: null,
-  }
+  },
 });
 
-module.exports = mongoose.model('User',userSchema);
+module.exports = mongoose.model("User", userSchema);

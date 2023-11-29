@@ -1,16 +1,12 @@
-// const express = require('express');
-// const register = require('../../controllers/registrationController');
-// const router = express.Router();
 
-// // router.get('/user', register)
-
-// module.exports = router;
-
-/////// second class
 const express = require('express');
-const register = require('../../controllers/registrationController');
+const registrationController = require('../../controllers/registrationController');
+const matchOTP = require('../../controllers/matchOtpController');
+const loginController = require('../../controllers/loginController');
 const router = express.Router();
 
-router.post('/registration', register)
+router.post('/registration', registrationController)
+router.post('/matchOTP', matchOTP)
+router.post('/login', loginController)
 
 module.exports = router;
