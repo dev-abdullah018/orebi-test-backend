@@ -28,7 +28,7 @@ async function registrationController(req, res) {
 
     if (!nameValidation(firstName)) {
       return res.status(400).send({
-        error: "Fisrt Name is Not Valid",
+        error: "First Name is Not Valid",
       });
     }
 
