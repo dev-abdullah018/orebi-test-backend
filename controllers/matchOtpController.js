@@ -10,7 +10,7 @@ async function matchOTP (req,res){
         setTimeout(async () => {
          await User.findOneAndUpdate({ email }, { $unset: { randomOTP: "" } });
            console.log("OTP removed for user:", email);
-          }, 30*1000);
+          }, 60 * 1000);
 
         return res.send({
             message: "OTP Matched"
