@@ -56,8 +56,8 @@ function otpTemplate(otp) {
              <a href="" class="company-link">OREBI</a>
            </div>
            <p class="greeting">Hi, User</p>
-           <p class="message-content">Thank you for joining Orebi. Use the following code to finish the account creation process. The code will be valid for the following 5 minutes </p>
-           <h2 class="otp-code">${otp.randomOTP}</h2>
+           <p class="message-content">Thank you for joining Orebi. Use the following code to finish the account creation process. The code will be valid for the following 1 minutes </p>
+           <h2 class="otp-code">${otp?.randomOTP}</h2>
            <p class="closing-message">Thank you<br />Team Orebi.</p>
            <hr style="border:none; border-top:1px solid #eee" />
            <div class="address-info">
