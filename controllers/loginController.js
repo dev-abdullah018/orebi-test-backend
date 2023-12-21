@@ -25,7 +25,7 @@ async function loginController (req,res){
                 id: existingMail[0]._id,
             })
            }else{
-            return res.status(400).send({
+            return res.status(400).json({
                 message: "Password Not Matched"
             })
            }
