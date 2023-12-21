@@ -27,28 +27,28 @@ async function registrationController(req, res) {
     } = req.body;
 
     if (!nameValidation(firstName)) {
-      return res.status(400).send({
-        error: "First Name is Not Valid",
+      return res.status(400).json({
+        message: "First Name is Not Valid",
       });
     }
 
     if (!nameValidation(lastName)) {
-      return res.status(400).send({
-        error: "Last Name is Not Valid",
+      return res.status(400).json({
+        message: "Last Name is Not Valid",
       });
     }
 
     if (!emailValidation(email)) {
-      return res.status(400).send({
-        error: "Please inter a valid email",
+      return res.status(400).json({
+        message: "Please inter a valid email",
       });
     }
 
     let existingMail = await User.find({ email });
 
     if (existingMail.length > 0) {
-      return res.status(400).send({
-        error: "Email already Exists",
+      return res.status(400).json({
+        message: "Email already Exists",
       });
     }
 
